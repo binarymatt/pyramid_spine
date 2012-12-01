@@ -8,6 +8,9 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
     'pyramid',
+    'pytz',
+    'sqlalchemy',
+    'pyramid_jinja2'
 ]
 try:
     import wsgiref
