@@ -10,7 +10,8 @@ requires = [
     'pyramid',
     'pytz',
     'sqlalchemy',
-    'pyramid_jinja2'
+    'pyramid_jinja2',
+    'passlib'
 ]
 try:
     import wsgiref

@@ -1,4 +1,4 @@
-from pyramid.threadlocal import get_current_registry
+#from pyramid.threadlocal import get_current_registry
 from pyramid.security import unauthenticated_userid
 from sqlalchemy import (
     Column,
@@ -13,8 +13,23 @@ from sqlalchemy.orm import (
 )
 
 from zope.sqlalchemy import ZopeTransactionExtension
-from cryptacular.pbkdf2 import PBKDF2PasswordManager
-hasher = PBKDF2PasswordManager()
+from passlib.context import CryptContext
+hasher = CryptContext(
+    # replace this list with the hash(es) you wish to support.
+    # this example sets pbkdf2_sha256 as the default,
+    # with support for legacy des_crypt hashes.
+    schemes=["pbkdf2_sha512", "sha512_crypt"],
+    default="pbkdf2_sha512",
+
+    # vary rounds parameter randomly when creating new hashes...
+    all__vary_rounds=0.1,
+
+    # set the number of rounds that should be used...
+    # (appropriate values may vary for different schemes,
+    # and the amount of time you wish it to take)
+    pbkdf2_sha512__default_rounds=12000,
+    sha512_crypt__default_rounds=60000
+)
 
 from pyramid_spine.utils import utcnow
 
@@ -37,10 +52,10 @@ def initialize_sql(engine):
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
 
-def authenticate_user(username, password):
-    registry = get_current_registry()
-    User = user_factory(registry)
-    return False
+#def authenticate_user(username, password):
+#    registry = get_current_registry()
+#    User = user_factory(registry)
+#    return False
 
 def user_factory(registry):
     klass = getattr(registry, 'spine_auth_class')
@@ -70,8 +85,8 @@ class UserMixin(TimestampMixin):
     password = Column(String, nullable=False)
 
     def check_password(self, raw_password):
-        return hasher.check(self.password, raw_password)
+        return hasher.verify(raw_password, self.password)
 
     def set_password(self, password):
-        self.password = hasher.encode(password)
+        self.password = hasher.encrypt(password)
 
