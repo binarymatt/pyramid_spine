@@ -1,3 +1,4 @@
+import json
 try:
     from markdown import markdown
 except:
@@ -45,3 +46,6 @@ def markdown_filter(text, *args, **kwargs):
     :return:       - parsed result.
     """
     return markdown(text, *args, **kwargs)
+
+def jsonify(obj):
+    return json.dumps(obj)
