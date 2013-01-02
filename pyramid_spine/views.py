@@ -4,23 +4,6 @@ from pyramid.security import unauthenticated_userid
 from pyramid.security import forget, remember
 
 from pyramid_spine.forms import SignupForm, LoginForm
-"""
-@view_defaults(renderer='login.mak')
-class LoginView(object):
-    def __init__(self, request):
-        self.request = request
- 
-    def get_login_url(self):
-        login_url = self.request.route_url('login')
-        return login_url
- 
-    @view_config(context=HTTPForbidden)
-    @view_config(route_name='login')
-    def login(self):
-        login_url = self.get_login_url()
-        # more code goes here
-        return dict(url=login_url)
-"""
 
 class AuthHandler(object):
     def __init__(self, request):
@@ -40,7 +23,6 @@ class SignupView(AuthHandler):
 
 @view_defaults(renderer='login.html')
 class LoginView(AuthHandler):
-    @view_config(context=HTTPForbidden)
     @view_config(route_name='spine.login', request_method='GET')
     def get(self):
         form = LoginForm()

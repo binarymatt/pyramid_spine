@@ -9,7 +9,7 @@ class TokenGenerator(object):
     """
     general algorithm was borrowed from djangos password reset token generator
     """
-    def make_token(self, user, key=None):
+    def create_token(self, user, key=None):
         #timestamp is number to seconds since epoch
         ts = int(time.time())
         return self._make_token(user, ts, key)
@@ -22,7 +22,7 @@ class TokenGenerator(object):
         hash = hmac.new(key, value, digestmod=hashlib.sha1).hexdigest()
         return '%s-%s' % (ts_b62, hash)
 
-    def check_token(self, user, token, limit=None):
+    def check_token(self, user, token, limit=86400):
         try:
             ts_b62, hash = token.split("-")
         except ValueError:
@@ -33,14 +33,14 @@ class TokenGenerator(object):
         except ValueError:
             return False
 
-        if not strings_differ(self.make_token(user, ts), token):
+        if strings_differ(self._make_token(user, ts), token):
             return False
         if limit:
             now = int(time.time())
-            if ts + int(limit) > now:
+            if now > ts + int(limit):
                 return False
 
         return True
 
-
+token_generator = TokenGenerator()
 
