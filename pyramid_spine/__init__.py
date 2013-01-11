@@ -1,7 +1,8 @@
 from sqlalchemy import engine_from_config
 
 from .models import (
-    initialize_sql
+    initialize_sql,
+    get_user
 )
 def register_user_class(config, klass):
     def register():
@@ -16,4 +17,5 @@ def includeme(config):
     engine = engine_from_config(settings, 'sqlalchemy.')
     initialize_sql(engine)
     config.add_directive('add_spine_user_class', register_user_class)
+    config.set_request_property(get_user, 'user', reify=True)
 
