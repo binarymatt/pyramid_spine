@@ -11,7 +11,9 @@ requires = [
     'pytz',
     'sqlalchemy',
     'pyramid_jinja2',
-    'passlib'
+    'pyramid_mailer',
+    'passlib',
+    'wtforms'
 ]
 try:
     import wsgiref
