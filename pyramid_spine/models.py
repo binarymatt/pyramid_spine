@@ -1,4 +1,5 @@
 #from pyramid.threadlocal import get_current_registry
+import uuid
 from pyramid.security import unauthenticated_userid
 from sqlalchemy import (
     Column,
@@ -11,7 +12,7 @@ from sqlalchemy.orm import (
     scoped_session,
     sessionmaker,
 )
-
+from sqlalchemy.dialects import postgresql as postgres
 from zope.sqlalchemy import ZopeTransactionExtension
 from passlib.context import CryptContext
 hasher = CryptContext(
@@ -75,9 +76,15 @@ def get_user(request):
         # in the database
         return User.query.filter_by(id=userid).first()
 
+def hex_default():
+    ud = uuid.uuid4().hex
+    return ud
+class UUIDPrimaryKeyMixin(object):
+    id = Column(postgres.UUID(as_uuid=True), primary_key=True, default=hex_default)
+
 class TimestampMixin(object):
-    created_ts = Column(DateTime(timezone=True), default=utcnow)
-    updated_ts = Column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+    created_ts = Column(DateTime(timezone=True), nullable=False, default=utcnow)
+    updated_ts = Column(DateTime(timezone=True), nullable=False, default=utcnow, onupdate=utcnow)
 
 class UserMixin(TimestampMixin):
     __tablename__ = 'users'
