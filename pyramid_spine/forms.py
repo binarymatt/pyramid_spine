@@ -16,28 +16,27 @@ class LoginForm(Form):
     password = PasswordField('Password', [validators.Required()])
 
     def validate(self):
-        print 'validating'
         registry = get_current_registry()
         User = user_factory(registry)
         rv = Form.validate(self)
-        print self.errors
         if not rv:
-            print 'returing false'
             return False
 
         user = User.query.filter_by(
             email=self.email.data).first()
-        print user
         if user is None:
-            print 'unknown email'
             self.email.errors.append('Unknown username')
             return False
 
         if not user.check_password(self.password.data):
-            print 'invalid password'
             self.password.errors.append('Invalid password')
             return False
-        print 'what'
+        if hasattr(User, 'validate_user'):
+            message = User.validate_user(user)
+            if message:
+                self.errors.append(message)
+                return False
+
         self.user = user
         return True
 

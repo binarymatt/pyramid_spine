@@ -35,7 +35,8 @@ class LoginView(AuthHandler):
             user = form.user
             headers = remember(self.request, user.id)
             self.request.registry.notify(LoginEvent(self.request))
-            location = self.request.route_path('search')
+            default_view = self.request.registry.settings.get('spine_login_redirect', 'home')
+            location = self.request.route_path(default_view)
             return HTTPFound(location=location, headers=headers)
         return {'form': form}
 

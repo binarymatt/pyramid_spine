@@ -17,7 +17,7 @@ class TokenGenerator(object):
     def _make_token(self, user, ts, key=None):
         ts_b62 = int_to_base62(ts)
         if key is None:
-            key = 'pyramid_spint.tokens.TokenGenerator'
+            key = 'pyramid_spine.tokens.TokenGenerator'
         value = (unicode(user.id) + user.password + unicode(ts))
         hash = hmac.new(key, value, digestmod=hashlib.sha1).hexdigest()
         return '%s-%s' % (ts_b62, hash)

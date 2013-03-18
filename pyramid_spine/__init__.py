@@ -42,4 +42,5 @@ def includeme(config):
     config.add_jinja2_search_path("pyramid_spine:templates")
 
     config.include('pyramid_mailer')
+    config.scan()
 
