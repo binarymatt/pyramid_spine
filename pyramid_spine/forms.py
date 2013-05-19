@@ -5,40 +5,6 @@ from pyramid.renderers import render
 from pyramid_spine.utils import int_to_base62
 from pyramid_spine.tokens import token_generator
 
-from pyramid_spine.models import user_factory
-class SignupForm(Form):
-    email = TextField('Email Address', [validators.Length(min=6, max=256), validators.Required()])
-    password = PasswordField('Password', [validators.Required(), validators.EqualTo('confirm', message='Passwords must match')])
-    confirm = PasswordField('Repeat Password')
-
-class LoginForm(Form):
-    email = TextField('Email', [validators.Required(), validators.Email()])
-    password = PasswordField('Password', [validators.Required()])
-
-    def validate(self):
-        registry = get_current_registry()
-        User = user_factory(registry)
-        rv = Form.validate(self)
-        if not rv:
-            return False
-
-        user = User.query.filter_by(
-            email=self.email.data).first()
-        if user is None:
-            self.email.errors.append('Unknown username')
-            return False
-
-        if not user.check_password(self.password.data):
-            self.password.errors.append('Invalid password')
-            return False
-        if hasattr(User, 'validate_user'):
-            message = User.validate_user(user)
-            if message:
-                self.errors.append(message)
-                return False
-
-        self.user = user
-        return True
 
 class PasswordResetForm(Form):
     email = TextField('Email', [validators.Required(), validators.Email()])
