@@ -16,7 +16,7 @@ class UUIDPrimaryKeyMixin(object):
     id = Column(postgres.UUID(as_uuid=True), primary_key=True, default=hex_default)
 
 class TimestampMixin(object):
-    created_ts = Column(DateTime(timezone=True), nullable=False, default=utcnow)
-    updated_ts = Column(DateTime(timezone=True), nullable=False, default=utcnow, onupdate=utcnow)
+    created_ts = Column(DateTime(timezone=False), nullable=False, default=utcnow)
+    updated_ts = Column(DateTime(timezone=False), nullable=False, default=utcnow, onupdate=utcnow)
 
 
