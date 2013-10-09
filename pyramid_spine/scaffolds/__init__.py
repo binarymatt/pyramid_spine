@@ -11,8 +11,8 @@ except ImportError: # pragma: no cover
         paste_script_template_renderer = None
         from pyramid.scaffolds import PyramidTemplate
 
-    class SpineTemplate(PyramidTemplate):
-        _template_dir = 'spine'
-        summary = 'creates a spine pyramid app'
-        template_renderer = staticmethod(paste_script_template_renderer)
+class SpineTemplate(PyramidTemplate):
+    _template_dir = 'spine'
+    summary = 'creates a spine pyramid app'
+    template_renderer = staticmethod(paste_script_template_renderer)
 
